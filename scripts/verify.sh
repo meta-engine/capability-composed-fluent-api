@@ -29,20 +29,21 @@ dotnet build "$project" \
 build_status=$?
 set -e
 
-cat "$compile_log"
-
 if [[ $build_status -eq 0 ]]; then
+    cat "$compile_log" >&2
     printf 'The intentionally invalid economy example compiled successfully.\n' >&2
     exit 1
 fi
 
 if ! grep -Fq "error CS1061" "$compile_log" ||
     ! grep -Fq "'IEconomyBookingBuilder' does not contain a definition for 'WithCheckedBag'" "$compile_log"; then
+    cat "$compile_log" >&2
     printf 'The invalid example did not fail with the expected CS1061 diagnostic.\n' >&2
     exit 1
 fi
 
 if grep -F ": error " "$compile_log" | grep -Fv "error CS1061" >/dev/null; then
+    cat "$compile_log" >&2
     printf 'The invalid example produced an unrelated compiler error.\n' >&2
     exit 1
 fi
