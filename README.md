@@ -24,8 +24,9 @@ callback returns. There is intentionally no terminal `.Build()` method.
 
 ## Verify
 
-The repository pins .NET SDK `10.0.105` so the compiler contract is reproducible.
-Run the complete local and CI check with:
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download). The sample is a
+console app, not a library: the SDK is required to build, run, and prove the
+compile contract.
 
 ```bash
 ./scripts/verify.sh

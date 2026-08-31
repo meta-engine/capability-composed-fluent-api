@@ -18,7 +18,7 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 10.0.105
+          dotnet-version: 10.0.x
 
       - name: Verify build, output, and compile contract
         run: ./scripts/verify.sh
