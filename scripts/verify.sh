@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+export DOTNET_CLI_UI_LANGUAGE=en
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 project="$repository_root/CapabilityComposedFluentApi.csproj"
@@ -35,14 +36,15 @@ if [[ $build_status -eq 0 ]]; then
     exit 1
 fi
 
-if ! grep -Fq "error CS1061" "$compile_log" ||
-    ! grep -Fq "'IEconomyBookingBuilder' does not contain a definition for 'WithCheckedBag'" "$compile_log"; then
+expected_diagnostic="[/\\\\]CompileContracts[/\\\\]InvalidEconomyBooking\\.cs\\([0-9]+,[0-9]+\\): error CS1061: 'IEconomyBookingBuilder' does not contain a definition for 'WithCheckedBag' "
+
+if ! grep -Eq "$expected_diagnostic" "$compile_log"; then
     cat "$compile_log" >&2
     printf 'The invalid example did not fail with the expected CS1061 diagnostic.\n' >&2
     exit 1
 fi
 
-if grep -F ": error " "$compile_log" | grep -Fv "error CS1061" >/dev/null; then
+if grep -F ": error " "$compile_log" | grep -Ev "$expected_diagnostic" >/dev/null; then
     cat "$compile_log" >&2
     printf 'The invalid example produced an unrelated compiler error.\n' >&2
     exit 1
