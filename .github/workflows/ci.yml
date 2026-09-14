@@ -22,3 +22,6 @@ jobs:
 
       - name: Verify build, output, and compile contract
         run: ./scripts/verify.sh
+
+      - name: Check that the verifier rejects other compile results
+        run: ./scripts/test-verifier.sh
